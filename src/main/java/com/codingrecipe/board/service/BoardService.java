@@ -17,7 +17,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
 
     public void save(BoardDTO boardDTO) throws IOException {
-        if (boardDTO.getBoardFile() == null || boardDTO.getBoardFile().isEmpty()) {
+        if (boardDTO.getBoardFile() == null || boardDTO.getBoardFile().get(0).isEmpty()) {
             // 파일 없다.
             boardDTO.setFileAttached(0);
             boardRepository.save(boardDTO);
@@ -27,7 +27,7 @@ public class BoardService {
             // 게시글 저장 후 id값 활용을 위해 리턴 받음.
             BoardDTO savedBoard = boardRepository.save(boardDTO);
             // 파일만 따로 가져오기
-                MultipartFile boardFile = boardDTO.getBoardFile(); {
+                for (MultipartFile boardFile: boardDTO.getBoardFile()) {
                 // 파일 이름 가져오기
                 String originalFilename = boardFile.getOriginalFilename();
                 System.out.println("originalFilename = " + originalFilename);
@@ -70,7 +70,7 @@ public class BoardService {
         boardRepository.delete(id);
     }
 
-    public BoardFileDTO findFile(Long id) {
+    public List<BoardFileDTO> findFile(Long id) {
         return boardRepository.findFile(id);
     }
 }
